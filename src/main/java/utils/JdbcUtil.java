@@ -2,21 +2,26 @@ package utils;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.ext.jdbc.JDBCClient;
+import io.vertx.ext.jdbc.JDBCClient;
+
+import static constants.MySqlConstant.*;
 
 
 public class JdbcUtil {
-    private JDBCClient jdbcClient;
+    private static JDBCClient dbClient;
 
     public JdbcUtil(Vertx vertx){
         JsonObject dbConfig = new JsonObject();
 
-        jdbcClient = JDBCClient
-                .createShared(io.vertx.rxjava.core.Vertx.newInstance(vertx)
-                        , dbConfig);
+        dbConfig.put("url", DB_URL);
+        dbConfig.put("user", DB_USER);
+        dbConfig.put("password", DB_PASSWORD);
+
+        dbClient = JDBCClient
+                .createShared(vertx, dbConfig);
     }
 
-    public JDBCClient getJdbcClient(){
-        return jdbcClient;
+    public static JDBCClient getJdbcClient(){
+        return dbClient;
     }
 }
